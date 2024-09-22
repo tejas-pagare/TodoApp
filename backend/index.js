@@ -5,6 +5,10 @@ const { createCheck, deleteCheck } = require('./types');
 const {  dbConnection } = require('./utils/DB_Conn');
 const { Todo } = require('./models/todoSchema');
 const { date } = require('zod');
+// const cors = require('cros');
+const cors = require('cors');
+app.use(cors())
+
 app.use(bodyParser.json());
 dbConnection();
 
@@ -53,7 +57,7 @@ app.get("/todos", async(req, res) => {
     const todos = await Todo.find({});
     return res.status(200).json({
       success: true,
-      date:todos
+      data:todos
     })
   }catch(error){
     res.status(411).json({
@@ -87,6 +91,35 @@ app.put("/completed", async(req, res) => {
     return res.status(400).json({
       success: false,
       msg: "Internal server Error"
+    })
+  }
+
+})
+
+app.delete("/delete",async(req,res)=>{
+  const {id} = req.body;
+  const check = deleteCheck.safeParse({
+    id
+  })
+  if (!check.success) {
+    return res.status(411).json({
+      success: false,
+      msg: "Enter a valid input"
+    });
+  }
+
+  try {
+    const deletedTodo = await Todo.findByIdAndDelete({_id:id});
+    
+    res.status(200).json({
+      success:true,
+      msg:"Todo deleted successfully",
+      deletedTodo
+    })
+  } catch (error) {
+    res.status(400).json({
+      success:false,
+      msg:"Internal server error"
     })
   }
 
