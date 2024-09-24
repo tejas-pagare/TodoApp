@@ -3,6 +3,8 @@ import TodoCard from "./TodoCard";
 import axios from "axios";
 import {Link} from 'react-router-dom'
 import Header from "./Header";
+import { IoIosAddCircle } from "react-icons/io";
+
 
 function Todos() {
   const [todos, setTodos] = useState([]);
@@ -10,7 +12,12 @@ function Todos() {
 
   useEffect(() => {
     const callTodos = async () => {
-      const response = await axios.get("http://localhost:3000/todos");
+      const response = await axios.get("http://localhost:3000/api/todo/todos",{
+        headers:{
+          'Content-Type': 'application/json',
+          'token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjI3ZmY0MGVkM2UwNjA2YTc1YjkyYSIsImlhdCI6MTcyNzE2ODUwMH0.9CPqa7s35agWKPsduEETBn5rSpFNWPS6nasgGvQBlqw'
+        }
+      });
       //console.log(response.data.data)
       setTodos(response.data.data);
       // .then(async(data)=>{
@@ -28,10 +35,11 @@ function Todos() {
         <>
         <Header/>
         <div className="p-12 flex flex-col gap-2 ">
-          <h1>No todos</h1>
-          <button className="bg-gray-600 text-white p-1 rounded-md w-[100px] ">
-            <Link to="/create-todo" >Create Todo</Link>
+          <button className=" text-white p-1 rounded-md ">
+            <Link to="/create-todo" ><IoIosAddCircle className="text-gray-600 text-4xl" />
+</Link>
           </button>
+          <h1 className="text-lg text-gray-500">No todos...</h1>
         </div>
         </>
       );
@@ -40,8 +48,9 @@ function Todos() {
         <>
         <Header/>
         <div className="p-12 flex flex-col gap-2">
-        <button className="bg-gray-600 text-white p-1 rounded-md w-[100px] ">
-            <Link to="/create-todo" >Create Todo</Link>
+        <button className=" text-white p-1 rounded-md ">
+            <Link to="/create-todo" ><IoIosAddCircle className="text-gray-600 text-4xl" />
+</Link>
           </button>
         <div className="flex flex-wrap gap-2 w-full justify-center items-center">
           {todos.map((todo) => (
